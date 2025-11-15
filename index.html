@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Color Switcher</title>
-    <link rel="manifest" href="manifest.json">
+    manifest.json
     <meta name="theme-color" content="#ffffff">
+    <!-- Google Fonts: Roboto -->
+    https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap
     <style>
         body {
             margin: 0;
@@ -16,6 +18,7 @@
             justify-content: flex-end;
             align-items: center;
             transition: background-color 0.5s ease;
+            font-family: 'Roboto', Arial, Helvetica, sans-serif; /* Modern font */
         }
         .color-bar {
             display: flex;
@@ -29,16 +32,21 @@
             border-radius: 50%;
             border: 2px solid #ccc;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700; /* Bold for clarity */
         }
     </style>
 </head>
 <body>
     <div class="color-bar">
-        <div class="circle" style="background-color: white;" data-color="white"></div>
-        <div class="circle" style="background-color: black;" data-color="black"></div>
-        <div class="circle" style="background-color: red;" data-color="red"></div>
-        <div class="circle" style="background-color: orange;" data-color="orange"></div>
-        <div class="circle" style="background-color: green;" data-color="green"></div>
+        <div class="circle" style="background-color: white; color: black;" data-color="white">W</div>
+        <div class="circle" style="background-color: black; color: white;" data-color="black">B</div>
+        <div class="circle" style="background-color: red; color: white;" data-color="red">R</div>
+        <div class="circle" style="background-color: orange; color: black;" data-color="orange">O</div>
+        <div class="circle" style="background-color: green; color: white;" data-color="green">G</div>
     </div>
 
     <script>
