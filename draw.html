@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Switcher & Drawing App</title>
+https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background-color: white;
+        font-family: 'Roboto', Arial, sans-serif;
+        overflow: hidden;
+        position: relative;
+    }
+    #drawingCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    .color-bar {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        z-index: 2;
+    }
+    .circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+    .pen-bar {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        z-index: 2;
+        align-items: center;
+    }
+    .pen-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+    .pen-circle.selected {
+        transform: scale(1.2);
+        border: 2px solid #333;
+    }
+    .clear-btn {
+        margin-top: 20px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #f44336;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .clear-btn:hover {
+        background-color: #d32f2f;
+    }
+</style>
+</head>
+<body>
+<canvas id="drawingCanvas"></canvas>
+
+<!-- Pen color selector -->
+<div class="pen-bar">
+    <div class="pen-circle" style="background-color: black;" data-color="black"></div>
+    <div class="pen-circle" style="background-color: white; border: 1px solid #ccc;" data-color="white"></div>
+    <div class="pen-circle" style="background-color: red;" data-color="red"></div>
+    <div class="pen-circle" style="background-color: green;" data-color="green"></div>
+    <div class="pen-circle" style="background-color: blue;" data-color="blue"></div>
+    <div class="pen-circle" style="background-color: yellow;" data-color="yellow"></div>
+    <!-- Clear button -->
+    <div class="clear-btn" id="clearCanvas">X</div>
+</div>
+
+<!-- Background color switcher -->
+<div class="color-bar">
+    <div class="circle" style="background-color: white; color: black;" data-color="white">W</div>
+    <div class="circle" style="background-color: black; color: white;" data-color="black">B</div>
+    <div class="circle" style="background-color: red; color: white;" data-color="red">R</div>
+    <div class="circle" style="background-color: orange; color: black;" data-color="orange">O</div>
+    <div class="circle" style="background-color: green; color: white;" data-color="green">G</div>
+</div>
+
+<script>
+    // Background color switcher
+    document.querySelectorAll('.circle').forEach(circle => {
+        circle.addEventListener('click', () => {
+            document.body.style.backgroundColor = circle.dataset.color;
+        });
+    });
+
+    // Drawing setup
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let drawing = false;
+    let penColor = 'black';
+    const penWidth = 15;
+
+    // Pen color selection
+    const penCircles = document.querySelectorAll('.pen-circle');
+    penCircles.forEach(circle => {
+        circle.addEventListener('click', () => {
+            penCircles.forEach(c => c.classList.remove('selected'));
+            circle.classList.add('selected');
+            penColor = circle.dataset.color;
+        });
+    });
+
+    // Drawing events
+    function startDrawing(e) {
+        drawing = true;
+        draw(e);
+    }
+    function stopDrawing() {
+        drawing = false;
+        ctx.beginPath();
+    }
+    function draw(e) {
+        if (!drawing) return;
+        ctx.lineWidth = penWidth;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = penColor;
+
+        let x, y;
+        if (e.touches) {
+            x = e.touches[0].clientX;
+            y = e.touches[0].clientY;
+        } else {
+            x = e.clientX;
+            y = e.clientY;
+        }
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mousemove', draw);
+
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('touchmove', draw);
+
+    // Clear canvas button
+    document.getElementById('clearCanvas').addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+</script>
+</body>
+</html>
